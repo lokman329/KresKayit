@@ -1,0 +1,269 @@
+{% extends "base_tr.html" %}
+
+{% block title %}Öğrenci Düzenle{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Öğrenci Bilgilerini Düzenle</h2>
+    <form method="POST">
+        {{ form.csrf_token }}
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Öğrenci Bilgileri</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control", placeholder="Öğrencinin Adı Soyadı") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.tc_number.label(class="form-label") }}
+                        {{ form.tc_number(class="form-control", placeholder="TC Kimlik Numarası") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.birth_date.label(class="form-label") }}
+                        {{ form.birth_date(class="form-control", type="date") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.address.label(class="form-label") }}
+                        {{ form.address(class="form-control", placeholder="Ev Adresi") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="form-check">
+                            {{ form.toilet_trained(class="form-check-input") }}
+                            {{ form.toilet_trained.label(class="form-check-label") }}
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="form-check">
+                            {{ form.school_experience(class="form-check-input") }}
+                            {{ form.school_experience.label(class="form-check-label") }}
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        {{ form.school_type.label(class="form-label") }}
+                        {{ form.school_type(class="form-select") }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        {{ form.sibling_count.label(class="form-label") }}
+                        {{ form.sibling_count(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Kreş Tercihleri</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">1. Tercih</label>
+                        <select name="preferred_kindergarten_1" class="form-select" required>
+                            <option value="">Kreş Seçiniz</option>
+                            {% for k in kindergartens %}
+                            <option value="{{ k.id }}" {% if student.preferred_kindergarten_1_id == k.id %}selected{% endif %}>{{ k.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">2. Tercih</label>
+                        <select name="preferred_kindergarten_2" class="form-select">
+                            <option value="">Kreş Seçiniz</option>
+                            {% for k in kindergartens %}
+                            <option value="{{ k.id }}" {% if student.preferred_kindergarten_2_id == k.id %}selected{% endif %}>{{ k.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">3. Tercih</label>
+                        <select name="preferred_kindergarten_3" class="form-select">
+                            <option value="">Kreş Seçiniz</option>
+                            {% for k in kindergartens %}
+                            <option value="{{ k.id }}" {% if student.preferred_kindergarten_3_id == k.id %}selected{% endif %}>{{ k.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Anne Bilgileri</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="form-check">
+                            {{ form.mother_alive(class="form-check-input") }}
+                            {{ form.mother_alive.label(class="form-check-label") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.mother_name.label(class="form-label") }}
+                        {{ form.mother_name(class="form-control", placeholder="Anne Adı Soyadı") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.mother_phone.label(class="form-label") }}
+                        {{ form.mother_phone(class="form-control", placeholder="Telefon Numarası") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.mother_education.label(class="form-label") }}
+                        {{ form.mother_education(class="form-select") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.mother_job.label(class="form-label") }}
+                        {{ form.mother_job(class="form-control", placeholder="Meslek") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.mother_employer.label(class="form-label") }}
+                        {{ form.mother_employer(class="form-control", placeholder="Çalıştığı Kurum") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.mother_salary.label(class="form-label") }}
+                        {{ form.mother_salary(class="form-control", placeholder="Aylık Gelir") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Baba Bilgileri</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="form-check">
+                            {{ form.father_alive(class="form-check-input") }}
+                            {{ form.father_alive.label(class="form-check-label") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.father_name.label(class="form-label") }}
+                        {{ form.father_name(class="form-control", placeholder="Baba Adı Soyadı") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.father_phone.label(class="form-label") }}
+                        {{ form.father_phone(class="form-control", placeholder="Telefon Numarası") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.father_education.label(class="form-label") }}
+                        {{ form.father_education(class="form-select") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.father_job.label(class="form-label") }}
+                        {{ form.father_job(class="form-control", placeholder="Meslek") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.father_employer.label(class="form-label") }}
+                        {{ form.father_employer(class="form-control", placeholder="Çalıştığı Kurum") }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.father_salary.label(class="form-label") }}
+                        {{ form.father_salary(class="form-control", placeholder="Aylık Gelir") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Ek Bilgiler</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check">
+                            {{ form.owns_house(class="form-check-input") }}
+                            {{ form.owns_house.label(class="form-check-label") }}
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.marital_status.label(class="form-label") }}
+                        {{ form.marital_status(class="form-select") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if current_user.is_admin %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Sınıf Ataması</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Sınıf</label>
+                        <select name="class_id" class="form-select">
+                            <option value="">Sınıf Seçiniz</option>
+                            {% for k in kindergartens %}
+                            <optgroup label="{{ k.name }}">
+                                {% for class in k.classes %}
+                                <option value="{{ class.id }}" {% if student.class_id == class.id %}selected{% endif %}>
+                                    {{ class.name }} ({{ class.students|length }}/{{ class.limit }})
+                                </option>
+                                {% endfor %}
+                            </optgroup>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="text-end mb-4">
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+            <a href="{{ url_for('student_list') }}" class="btn btn-secondary">İptal</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const motherAlive = document.getElementById('mother_alive');
+    const fatherAlive = document.getElementById('father_alive');
+    const motherInfo = document.querySelector('.mother-info');
+    const fatherInfo = document.querySelector('.father-info');
+
+    function toggleParentInfo(checkbox, infoDiv) {
+        if (checkbox.checked) {
+            infoDiv.style.display = 'flex';
+        } else {
+            infoDiv.style.display = 'none';
+        }
+    }
+
+    motherAlive.addEventListener('change', () => toggleParentInfo(motherAlive, motherInfo));
+    fatherAlive.addEventListener('change', () => toggleParentInfo(fatherAlive, fatherInfo));
+
+    // Initial state
+    toggleParentInfo(motherAlive, motherInfo);
+    toggleParentInfo(fatherAlive, fatherInfo);
+});
+</script>
+{% endblock %} 

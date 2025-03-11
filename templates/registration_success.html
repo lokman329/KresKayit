@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Registration Success{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body text-center">
+        <h1 class="display-4 text-success mb-4">Registration Successful!</h1>
+        <p class="lead">Thank you for registering. Your application has been received and will be processed.</p>
+        <hr class="my-4">
+        <p>You can check the status of your application in the student list once the assignments are made.</p>
+        <div class="mt-4">
+            <a href="{{ url_for('index') }}" class="btn btn-primary me-2">Return to Home</a>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('student_list') }}" class="btn btn-secondary">View Student List</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

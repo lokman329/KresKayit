@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to Kindergarten Registration</h1>
+    <p class="lead">Register your child for kindergarten or manage existing registrations.</p>
+    <hr class="my-4">
+    <p>Click below to start the registration process or view registered students.</p>
+    <p class="lead">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}" role="button">Register Now</a>
+        {% if current_user.is_authenticated %}
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('student_list') }}" role="button">View Students</a>
+        {% endif %}
+    </p>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <h3>Easy Registration</h3>
+        <p>Simple and straightforward registration process for your child.</p>
+    </div>
+    <div class="col-md-4">
+        <h3>Fair Selection</h3>
+        <p>Our point-based system ensures fair selection of students.</p>
+    </div>
+    <div class="col-md-4">
+        <h3>Transparent Process</h3>
+        <p>Track your application status and view results online.</p>
+    </div>
+</div>
+{% endblock %} 

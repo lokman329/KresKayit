@@ -1,0 +1,90 @@
+{% extends "base_tr.html" %}
+
+{% block title %}Öğrenci Yerleştirme{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card stats-card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Yerleştirme İstatistikleri</h4>
+                <div class="mb-3">
+                    <div class="stats-number">{{ total_students }}</div>
+                    <div class="text-white-50">Toplam Öğrenci</div>
+                </div>
+                <div class="mb-3">
+                    <div class="stats-number">{{ assigned_students }}</div>
+                    <div class="text-white-50">Yerleştirilen Öğrenci</div>
+                </div>
+                <div>
+                    <div class="stats-number">{{ unassigned_students }}</div>
+                    <div class="text-white-50">Yerleştirilmeyen Öğrenci</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Kreş Kapasiteleri</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Kreş</th>
+                                <th>Mevcut Öğrenci</th>
+                                <th>Toplam Kapasite</th>
+                                <th>Boş Kontenjan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in kindergarten_stats %}
+                            <tr>
+                                <td>{{ stat.name }}</td>
+                                <td>
+                                    <span class="badge badge-primary">{{ stat.current_students }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-secondary">{{ stat.total_capacity }}</span>
+                                </td>
+                                <td>
+                                    {% if stat.available_spots > 0 %}
+                                    <span class="badge bg-success">{{ stat.available_spots }}</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Dolu</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-0">Öğrenci Yerleştirme</h4>
+    </div>
+    <div class="card-body">
+        <p class="lead">Otomatik yerleştirme sürecini başlatmak için aşağıdaki butona tıklayın. Bu işlem:</p>
+        <ul class="mb-4">
+            <li>Öğrencileri puanlarına ve kayıt tarihlerine göre sıralar</li>
+            <li>Öğrencileri tercih ettikleri kreşlere yerleştirmeye çalışır</li>
+            <li>Öğrencileri kapasiteye göre mevcut sınıflara dağıtır</li>
+        </ul>
+        <form method="POST">
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-play me-2"></i>Yerleştirme Sürecini Başlat
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

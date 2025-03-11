@@ -1,0 +1,142 @@
+:root {
+    --primary-orange: #FF7F50;    /* Coral orange */
+    --secondary-orange: #FFA07A;  /* Light salmon */
+    --accent-blue: #4682B4;       /* Steel blue */
+    --light-blue: #B0C4DE;        /* Light steel blue */
+    --background-warm: #FFF5EB;   /* Warm white */
+    --text-dark: #2C3E50;         /* Dark blue-gray */
+    --success-green: #66CDAA;     /* Medium aquamarine */
+}
+
+body {
+    background-color: var(--background-warm);
+    color: var(--text-dark);
+}
+
+.navbar {
+    background: linear-gradient(135deg, var(--primary-orange), var(--accent-blue));
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: white !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--background-warm) !important;
+    transform: translateY(-1px);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    background-color: white;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: linear-gradient(to right, var(--secondary-orange), var(--light-blue));
+    color: white;
+    border: none;
+    padding: 1rem 1.25rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-orange);
+    border-color: var(--primary-orange);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: var(--light-blue);
+    border-color: var(--light-blue);
+    color: var(--text-dark);
+}
+
+.btn-secondary:hover {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
+}
+
+.table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: var(--accent-blue);
+    color: white;
+    border-bottom: none;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: var(--background-warm);
+}
+
+.alert {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.alert-info {
+    background-color: var(--light-blue);
+    color: var(--text-dark);
+}
+
+.form-control:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 0.2rem rgba(255,127,80,0.25);
+}
+
+.form-select:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 0.2rem rgba(255,127,80,0.25);
+}
+
+/* Custom styles for statistics cards */
+.stats-card {
+    background: linear-gradient(135deg, var(--secondary-orange), var(--light-blue));
+    color: white;
+}
+
+.stats-card .card-body {
+    padding: 2rem;
+}
+
+.stats-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* Custom badge styles */
+.badge {
+    padding: 0.5em 1em;
+    border-radius: 20px;
+}
+
+.badge-primary {
+    background-color: var(--primary-orange);
+}
+
+.badge-secondary {
+    background-color: var(--light-blue);
+    color: var(--text-dark);
+} 

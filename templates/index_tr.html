@@ -1,0 +1,42 @@
+{% extends "base_tr.html" %}
+
+{% block title %}Ana Sayfa{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="jumbotron text-center">
+        <h1 class="display-4">Kreş Kayıt Sistemi</h1>
+        <p class="lead">Atakum Belediyesi Kreş Kayıt ve Yerleştirme Sistemi</p>
+        <div class="background-image-container mb-4">
+            <img src="{{ url_for('static', filename='background.jpg') }}" alt="Kreş" class="img-fluid rounded shadow" style="max-height: 400px; width: auto;">
+        </div>
+        <hr class="my-4">
+        {% if current_user.is_authenticated %}
+            <p>Hoş geldiniz! Öğrenci kayıt ve yönetim işlemlerine başlayabilirsiniz.</p>
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Öğrenci Kayıt</a>
+            <a href="{{ url_for('student_list') }}" class="btn btn-secondary btn-lg">Öğrenci Listesi</a>
+        {% else %}
+            <p>Kreş kayıt sistemine hoş geldiniz. Öğrenci kaydı için aşağıdaki butonu kullanabilirsiniz.</p>
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Öğrenci Kayıt</a>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.background-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.background-image-container img {
+    transition: transform 0.3s ease;
+}
+
+.background-image-container img:hover {
+    transform: scale(1.02);
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Student List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Student List</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>TC Number</th>
+                    <th>Points</th>
+                    <th>Status</th>
+                    <th>Assigned Class</th>
+                    {% if current_user.is_authenticated %}
+                    <th>Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.tc_number }}</td>
+                    <td>{{ student.points }}</td>
+                    <td>
+                        {% if student.disqualified %}
+                        <span class="badge bg-danger">Disqualified</span>
+                        {% else %}
+                        <span class="badge bg-success">Qualified</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if student.assigned_class %}
+                        {{ student.assigned_class.kindergarten.name }} - {{ student.assigned_class.name }}
+                        {% else %}
+                        Not Assigned
+                        {% endif %}
+                    </td>
+                    {% if current_user.is_authenticated %}
+                    <td>
+                        <a href="{{ url_for('edit_student', student_id=student.id) }}" class="btn btn-primary btn-sm">Edit</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 

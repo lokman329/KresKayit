@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Student Assignment{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card stats-card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Assignment Statistics</h4>
+                <div class="mb-3">
+                    <div class="stats-number">{{ total_students }}</div>
+                    <div class="text-white-50">Total Students</div>
+                </div>
+                <div class="mb-3">
+                    <div class="stats-number">{{ assigned_students }}</div>
+                    <div class="text-white-50">Assigned Students</div>
+                </div>
+                <div>
+                    <div class="stats-number">{{ unassigned_students }}</div>
+                    <div class="text-white-50">Unassigned Students</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Kindergarten Capacity</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Kindergarten</th>
+                                <th>Current Students</th>
+                                <th>Total Capacity</th>
+                                <th>Available Spots</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in kindergarten_stats %}
+                            <tr>
+                                <td>{{ stat.name }}</td>
+                                <td>
+                                    <span class="badge badge-primary">{{ stat.current_students }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-secondary">{{ stat.total_capacity }}</span>
+                                </td>
+                                <td>
+                                    {% if stat.available_spots > 0 %}
+                                    <span class="badge bg-success">{{ stat.available_spots }}</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Full</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-0">Student Assignment</h4>
+    </div>
+    <div class="card-body">
+        <p class="lead">Click the button below to start the automatic assignment process. This will:</p>
+        <ul class="mb-4">
+            <li>Sort students by their points and registration date</li>
+            <li>Try to assign students to their preferred kindergartens</li>
+            <li>Distribute students among available classes based on capacity</li>
+        </ul>
+        <form method="POST">
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-play me-2"></i>Start Assignment Process
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

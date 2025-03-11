@@ -1,0 +1,17 @@
+{% extends "base_tr.html" %}
+
+{% block title %}Kayıt Başarılı{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="alert alert-success text-center" role="alert">
+        <h4 class="alert-heading">Kayıt Başarılı!</h4>
+        <p>Öğrenci kaydı başarıyla tamamlandı.</p>
+        <hr>
+        <p class="mb-0">
+            <a href="{{ url_for('register') }}" class="btn btn-success">Yeni Kayıt</a>
+            <a href="{{ url_for('student_list') }}" class="btn btn-primary">Öğrenci Listesi</a>
+        </p>
+    </div>
+</div>
+{% endblock %} 
