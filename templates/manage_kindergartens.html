@@ -57,6 +57,7 @@
                                 <thead>
                                     <tr>
                                         <th>Class Name</th>
+                                        <th>Age Group</th>
                                         <th>Student Count</th>
                                         <th>Student Limit</th>
                                         <th>Actions</th>
@@ -68,6 +69,17 @@
                                         <td>
                                             <form method="POST" action="{{ url_for('update_class', class_id=class.id) }}" class="d-flex gap-2">
                                                 <input type="text" name="name" value="{{ class.name }}" class="form-control form-control-sm" required>
+                                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form method="POST" action="{{ url_for('update_class', class_id=class.id) }}" class="d-flex gap-2">
+                                                <select name="age_group" class="form-select form-select-sm" required>
+                                                    <option value="3" {% if class.age_group == 3 %}selected{% endif %}>3 years</option>
+                                                    <option value="4" {% if class.age_group == 4 %}selected{% endif %}>4 years</option>
+                                                    <option value="5" {% if class.age_group == 5 %}selected{% endif %}>5 years</option>
+                                                    <option value="6" {% if class.age_group == 6 %}selected{% endif %}>6 years</option>
+                                                </select>
                                                 <button type="submit" class="btn btn-sm btn-primary">Update</button>
                                             </form>
                                         </td>
@@ -102,11 +114,20 @@
                             </div>
                             <div class="card-body">
                                 <form method="POST" action="{{ url_for('add_class', kindergarten_id=kindergarten.id) }}" class="row g-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label class="form-label">Class Name</label>
                                         <input type="text" name="name" class="form-control" required placeholder="e.g., Class A">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Age Group</label>
+                                        <select name="age_group" class="form-select" required>
+                                            <option value="3">3 years</option>
+                                            <option value="4">4 years</option>
+                                            <option value="5">5 years</option>
+                                            <option value="6">6 years</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
                                         <label class="form-label">Student Limit</label>
                                         <input type="number" name="limit" class="form-control" required min="1" placeholder="Enter student limit">
                                     </div>

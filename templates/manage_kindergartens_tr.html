@@ -46,7 +46,7 @@
                                     <input type="text" name="name" value="{{ kindergarten.name }}" class="form-control" required>
                                 </div>
                                 <div class="col-md-4">
-                                    <button type="submit" class="btn btn-primary">Adı Güncelle</button>
+                                    <button type="submit" class="btn btn-primary">İsmi Güncelle</button>
                                 </div>
                             </form>
                         </div>
@@ -57,6 +57,7 @@
                                 <thead>
                                     <tr>
                                         <th>Sınıf Adı</th>
+                                        <th>Yaş Grubu</th>
                                         <th>Öğrenci Sayısı</th>
                                         <th>Öğrenci Limiti</th>
                                         <th>İşlemler</th>
@@ -68,6 +69,17 @@
                                         <td>
                                             <form method="POST" action="{{ url_for('update_class', class_id=class.id) }}" class="d-flex gap-2">
                                                 <input type="text" name="name" value="{{ class.name }}" class="form-control form-control-sm" required>
+                                                <button type="submit" class="btn btn-sm btn-primary">Güncelle</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form method="POST" action="{{ url_for('update_class', class_id=class.id) }}" class="d-flex gap-2">
+                                                <select name="age_group" class="form-select form-select-sm" required>
+                                                    <option value="3" {% if class.age_group == 3 %}selected{% endif %}>3 yaş</option>
+                                                    <option value="4" {% if class.age_group == 4 %}selected{% endif %}>4 yaş</option>
+                                                    <option value="5" {% if class.age_group == 5 %}selected{% endif %}>5 yaş</option>
+                                                    <option value="6" {% if class.age_group == 6 %}selected{% endif %}>6 yaş</option>
+                                                </select>
                                                 <button type="submit" class="btn btn-sm btn-primary">Güncelle</button>
                                             </form>
                                         </td>
@@ -102,13 +114,22 @@
                             </div>
                             <div class="card-body">
                                 <form method="POST" action="{{ url_for('add_class', kindergarten_id=kindergarten.id) }}" class="row g-3">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label class="form-label">Sınıf Adı</label>
-                                        <input type="text" name="name" class="form-control" required placeholder="örn: A Sınıfı">
+                                        <input type="text" name="name" class="form-control" required placeholder="Örn: A Sınıfı">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Yaş Grubu</label>
+                                        <select name="age_group" class="form-select" required>
+                                            <option value="3">3 yaş</option>
+                                            <option value="4">4 yaş</option>
+                                            <option value="5">5 yaş</option>
+                                            <option value="6">6 yaş</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
                                         <label class="form-label">Öğrenci Limiti</label>
-                                        <input type="number" name="limit" class="form-control" required min="1" placeholder="Öğrenci limitini giriniz">
+                                        <input type="number" name="limit" class="form-control" required min="1" placeholder="Öğrenci limiti girin">
                                     </div>
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-success">Sınıf Ekle</button>
