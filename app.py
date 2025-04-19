@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_migrate import Migrate
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -10,6 +11,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///kindergarten.db'
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -42,6 +44,7 @@ class Class(db.Model):
     name = db.Column(db.String(50), nullable=False)
     kindergarten_id = db.Column(db.Integer, db.ForeignKey('kindergarten.id'), nullable=False)
     limit = db.Column(db.Integer, nullable=False)
+    age_group = db.Column(db.Integer, nullable=False)  # 3, 4, 5, or 6
     students = db.relationship('Student', backref='assigned_class', lazy=True)
 
 class Student(db.Model):
@@ -231,6 +234,10 @@ def assignment():
         ).order_by(Student.points.desc(), Student.registration_date).all()
 
         for student in students:
+            # Calculate student's age
+            current_year = datetime.utcnow().year
+            student_age = current_year - student.birth_date.year
+
             # Try to assign to preferred kindergartens in order
             for kindergarten_id in [
                 student.preferred_kindergarten_1_id,
@@ -240,9 +247,10 @@ def assignment():
                 if kindergarten_id:
                     kindergarten = Kindergarten.query.get(kindergarten_id)
                     if kindergarten:
-                        # Find available classes in this kindergarten
+                        # Find available classes in this kindergarten for student's age group
                         available_classes = Class.query.filter(
-                            Class.kindergarten_id == kindergarten.id
+                            Class.kindergarten_id == kindergarten.id,
+                            Class.age_group == student_age
                         ).all()
                         
                         # Sort classes by current capacity
@@ -335,11 +343,13 @@ def add_class(kindergarten_id):
     kindergarten = Kindergarten.query.get_or_404(kindergarten_id)
     name = request.form.get('name')
     limit = int(request.form.get('limit'))
+    age_group = int(request.form.get('age_group'))
     
     class_ = Class(
         name=name,
         kindergarten_id=kindergarten_id,
-        limit=limit
+        limit=limit,
+        age_group=age_group
     )
     db.session.add(class_)
     db.session.commit()
@@ -357,11 +367,14 @@ def update_class(class_id):
     class_ = Class.query.get_or_404(class_id)
     name = request.form.get('name')
     limit = request.form.get('limit')
+    age_group = request.form.get('age_group')
     
     if name:
         class_.name = name
     if limit:
         class_.limit = int(limit)
+    if age_group:
+        class_.age_group = int(age_group)
     
     db.session.commit()
     flash('Sınıf bilgileri güncellendi.')
