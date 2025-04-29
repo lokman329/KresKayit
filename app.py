@@ -1,15 +1,23 @@
-from flask import Flask, render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_migrate import Migrate
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from dotenv import load_dotenv
 from forms import LoginForm, StudentForm
+import pandas as pd
+from io import BytesIO
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///kindergarten.db'
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -42,6 +50,7 @@ class Class(db.Model):
     name = db.Column(db.String(50), nullable=False)
     kindergarten_id = db.Column(db.Integer, db.ForeignKey('kindergarten.id'), nullable=False)
     limit = db.Column(db.Integer, nullable=False)
+    age_group = db.Column(db.Integer, nullable=False)  # 3, 4, 5, or 6
     students = db.relationship('Student', backref='assigned_class', lazy=True)
 
 class Student(db.Model):
@@ -231,6 +240,10 @@ def assignment():
         ).order_by(Student.points.desc(), Student.registration_date).all()
 
         for student in students:
+            # Calculate student's age
+            current_year = datetime.utcnow().year
+            student_age = current_year - student.birth_date.year
+
             # Try to assign to preferred kindergartens in order
             for kindergarten_id in [
                 student.preferred_kindergarten_1_id,
@@ -240,9 +253,10 @@ def assignment():
                 if kindergarten_id:
                     kindergarten = Kindergarten.query.get(kindergarten_id)
                     if kindergarten:
-                        # Find available classes in this kindergarten
+                        # Find available classes in this kindergarten for student's age group
                         available_classes = Class.query.filter(
-                            Class.kindergarten_id == kindergarten.id
+                            Class.kindergarten_id == kindergarten.id,
+                            Class.age_group == student_age
                         ).all()
                         
                         # Sort classes by current capacity
@@ -335,11 +349,13 @@ def add_class(kindergarten_id):
     kindergarten = Kindergarten.query.get_or_404(kindergarten_id)
     name = request.form.get('name')
     limit = int(request.form.get('limit'))
+    age_group = int(request.form.get('age_group'))
     
     class_ = Class(
         name=name,
         kindergarten_id=kindergarten_id,
-        limit=limit
+        limit=limit,
+        age_group=age_group
     )
     db.session.add(class_)
     db.session.commit()
@@ -357,11 +373,14 @@ def update_class(class_id):
     class_ = Class.query.get_or_404(class_id)
     name = request.form.get('name')
     limit = request.form.get('limit')
+    age_group = request.form.get('age_group')
     
     if name:
         class_.name = name
     if limit:
         class_.limit = int(limit)
+    if age_group:
+        class_.age_group = int(age_group)
     
     db.session.commit()
     flash('Sınıf bilgileri güncellendi.')
@@ -427,13 +446,110 @@ def edit_student(student_id):
     
     return render_template('edit_student_tr.html', form=form, student=student, kindergartens=kindergartens)
 
+@app.route('/delete_student/<int:student_id>', methods=['POST'])
+@login_required
+def delete_student(student_id):
+    if not current_user.is_admin:
+        flash('Bu işlemi yapmaya yetkiniz yok.')
+        return redirect(url_for('index'))
+    
+    student = Student.query.get_or_404(student_id)
+    
+    # Remove student from class if assigned
+    if student.class_id:
+        student.class_id = None
+    
+    db.session.delete(student)
+    db.session.commit()
+    
+    flash(f'{student.name} öğrencisi başarıyla silindi.')
+    return redirect(url_for('student_list'))
+
+@app.route('/export_students')
+@login_required
+def export_students():
+    if not current_user.is_admin:
+        flash('Bu işlemi yapmaya yetkiniz yok.')
+        return redirect(url_for('index'))
+    
+    # Get all students
+    students = Student.query.all()
+    
+    # Create a list of dictionaries with student data
+    data = []
+    for student in students:
+        student_data = {
+            'Ad Soyad': student.name,
+            'TC Kimlik No': student.tc_number,
+            'Doğum Tarihi': student.birth_date.strftime('%d.%m.%Y'),
+            'Adres': student.address,
+            'Puan': student.points,
+            'Durum': 'Elendi' if student.disqualified else 'Uygun',
+            'Atanan Sınıf': f"{student.assigned_class.kindergarten.name} - {student.assigned_class.name}" if student.assigned_class else 'Atanmadı',
+            'Anne Adı': student.mother_name,
+            'Anne Telefon': student.mother_phone,
+            'Anne Eğitim': student.mother_education,
+            'Anne Meslek': student.mother_job,
+            'Baba Adı': student.father_name,
+            'Baba Telefon': student.father_phone,
+            'Baba Eğitim': student.father_education,
+            'Baba Meslek': student.father_job
+        }
+        data.append(student_data)
+    
+    # Create DataFrame
+    df = pd.DataFrame(data)
+    
+    # Create Excel file in memory
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, sheet_name='Öğrenci Listesi', index=False)
+        
+        # Auto-adjust columns' width
+        worksheet = writer.sheets['Öğrenci Listesi']
+        for i, col in enumerate(df.columns):
+            max_length = max(df[col].astype(str).apply(len).max(), len(col)) + 2
+            worksheet.set_column(i, i, max_length)
+    
+    output.seek(0)
+    
+    # Return Excel file
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name='ogrenci_listesi.xlsx'
+    )
+
+@app.route('/undo_assignment', methods=['POST'])
+@login_required
+def undo_assignment():
+    if not current_user.is_admin:
+        flash('Bu işlemi yapmaya yetkiniz yok.')
+        return redirect(url_for('index'))
+    
+    # Get all assigned students
+    assigned_students = Student.query.filter(Student.class_id.isnot(None)).all()
+    
+    # Remove class assignments
+    for student in assigned_students:
+        student.class_id = None
+    
+    db.session.commit()
+    
+    flash('Tüm öğrenci yerleştirmeleri başarıyla geri alındı.')
+    return redirect(url_for('assignment'))
+
 # Create database tables
 with app.app_context():
     db.create_all()
     # Create an admin user if it doesn't exist
-    if not User.query.filter_by(username='admin').first():
-        admin = User(username='admin', is_admin=True)
-        admin.set_password('admin')  # Change this password in production!
+    admin_username = os.environ.get('ADMIN_USERNAME', 'atakumbeladmin')
+    admin_password = os.environ.get('ADMIN_PASSWORD', 'atakumbeladminkres')
+    
+    if not User.query.filter_by(username=admin_username).first():
+        admin = User(username=admin_username, is_admin=True)
+        admin.set_password(admin_password)
         db.session.add(admin)
         db.session.commit()
 

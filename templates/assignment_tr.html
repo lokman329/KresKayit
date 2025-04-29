@@ -78,13 +78,20 @@
             <li>Öğrencileri tercih ettikleri kreşlere yerleştirmeye çalışır</li>
             <li>Öğrencileri kapasiteye göre mevcut sınıflara dağıtır</li>
         </ul>
-        <form method="POST">
-            <div class="d-grid gap-2">
+        <div class="d-grid gap-2">
+            <form method="POST" class="d-inline">
                 <button type="submit" class="btn btn-primary btn-lg">
                     <i class="fas fa-play me-2"></i>Yerleştirme Sürecini Başlat
                 </button>
-            </div>
-        </form>
+            </form>
+            {% if assigned_students > 0 %}
+            <form method="POST" action="{{ url_for('undo_assignment') }}" class="d-inline">
+                <button type="submit" class="btn btn-danger btn-lg" onclick="return confirm('Tüm öğrenci yerleştirmelerini geri almak istediğinizden emin misiniz?')">
+                    <i class="fas fa-undo me-2"></i>Yerleştirmeleri Geri Al
+                </button>
+            </form>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %} 
