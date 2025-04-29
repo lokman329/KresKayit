@@ -17,6 +17,9 @@ def create_test_data():
                 {"name": "Papatya", "limit": 15, "age_group": 3},
                 {"name": "Gül", "limit": 15, "age_group": 4},
                 {"name": "Menekşe", "limit": 15, "age_group": 5}
+                {"name": "Papatya", "limit": 15, "age_group": 3},
+                {"name": "Gül", "limit": 15, "age_group": 4},
+                {"name": "Menekşe", "limit": 15, "age_group": 5}
             ]
         },
         {
@@ -25,11 +28,18 @@ def create_test_data():
                 {"name": "Martı", "limit": 20, "age_group": 3},
                 {"name": "Yunus", "limit": 20, "age_group": 4},
                 {"name": "Balina", "limit": 20, "age_group": 5}
+                {"name": "Martı", "limit": 20, "age_group": 3},
+                {"name": "Yunus", "limit": 20, "age_group": 4},
+                {"name": "Balina", "limit": 20, "age_group": 5}
             ]
         },
         {
             "name": "Güneş Kreş",
             "classes": [
+                {"name": "Güneş A", "limit": 12, "age_group": 3},
+                {"name": "Güneş B", "limit": 12, "age_group": 4},
+                {"name": "Güneş C", "limit": 12, "age_group": 5},
+                {"name": "Güneş D", "limit": 12, "age_group": 6}
                 {"name": "Güneş A", "limit": 12, "age_group": 3},
                 {"name": "Güneş B", "limit": 12, "age_group": 4},
                 {"name": "Güneş C", "limit": 12, "age_group": 5},
@@ -52,6 +62,8 @@ def create_test_data():
                 kindergarten_id=k.id,
                 limit=c_data["limit"],
                 age_group=c_data["age_group"]
+                limit=c_data["limit"],
+                age_group=c_data["age_group"]
             )
             db.session.add(c)
 
@@ -60,9 +72,11 @@ def create_test_data():
     # Test data scenarios
     students_data = [
         # 3 years old case
+        # 3 years old case
         {
             "name": "Ayşe Yılmaz",
             "tc_number": "10000000001",
+            "birth_date": date(2021, 1, 15),  # 3 years old
             "birth_date": date(2021, 1, 15),  # 3 years old
             "address": "Atakum Merkez Mah.",
             "toilet_trained": True,
@@ -90,9 +104,11 @@ def create_test_data():
             "preferred_kindergarten_3_id": created_kindergartens["Güneş Kreş"]
         },
         # 4 years old case
+        # 4 years old case
         {
             "name": "Mehmet Demir",
             "tc_number": "10000000002",
+            "birth_date": date(2020, 6, 20),  # 4 years old
             "birth_date": date(2020, 6, 20),  # 4 years old
             "address": "Atakum Sahil Mah.",
             "toilet_trained": True,
@@ -120,9 +136,11 @@ def create_test_data():
             "preferred_kindergarten_3_id": None
         },
         # 5 years old case
+        # 5 years old case
         {
             "name": "Can Kaya",
             "tc_number": "10000000003",
+            "birth_date": date(2019, 3, 10),  # 5 years old
             "birth_date": date(2019, 3, 10),  # 5 years old
             "address": "İlkadım Merkez",  # Not in Atakum
             "toilet_trained": True,
@@ -150,9 +168,11 @@ def create_test_data():
             "preferred_kindergarten_3_id": None
         },
         # 6 years old case
+        # 6 years old case
         {
             "name": "Elif Şahin",
             "tc_number": "10000000004",
+            "birth_date": date(2018, 1, 1),  # 6 years old
             "birth_date": date(2018, 1, 1),  # 6 years old
             "address": "Atakum Yeni Mah.",
             "toilet_trained": True,
@@ -176,15 +196,19 @@ def create_test_data():
             "owns_house": True,
             "marital_status": "Evli",
             "preferred_kindergarten_1_id": created_kindergartens["Güneş Kreş"],
+            "preferred_kindergarten_1_id": created_kindergartens["Güneş Kreş"],
             "preferred_kindergarten_2_id": None,
             "preferred_kindergarten_3_id": None
         },
+        # Disqualified case (age)
         # Disqualified case (age)
         {
             "name": "Ahmet Yıldız",
             "tc_number": "10000000005",
             "birth_date": date(2017, 12, 1),  # 7 years old
+            "birth_date": date(2017, 12, 1),  # 7 years old
             "address": "Atakum Deniz Mah.",
+            "toilet_trained": True,
             "toilet_trained": True,
             "school_experience": False,
             "school_type": None,
@@ -222,6 +246,54 @@ def create_test_data():
     ]
 
     tc_base = 10000000006
+    # Add students with specific age distributions
+    age_distribution = {
+        3: 10,  # 10 students of age 3
+        4: 10,  # 10 students of age 4
+        5: 10,  # 10 students of age 5
+        6: 5    # 5 students of age 6
+    }
+
+    for age, count in age_distribution.items():
+        for i in range(count):
+            birth_year = datetime.utcnow().year - age
+            birth_month = random.randint(1, 12)
+            birth_day = random.randint(1, 28)
+            
+            mother_salary = random.randint(15000, 60000)
+            father_salary = random.randint(15000, 60000)
+            
+            student_data = {
+                "name": f"{random.choice(turkish_names)} {random.choice(turkish_surnames)}",
+                "tc_number": str(tc_base),
+                "birth_date": date(birth_year, birth_month, birth_day),
+                "address": "Atakum" if random.random() > 0.3 else "İlkadım",
+                "toilet_trained": True,
+                "school_experience": random.choice([True, False]),
+                "school_type": random.choice(["Devlet", "Özel", None]),
+                "sibling_count": random.randint(0, 3),
+                "mother_alive": True,
+                "mother_name": f"Anne {random.choice(turkish_names)}",
+                "mother_phone": f"555{random.randint(1000000, 9999999)}",
+                "mother_education": random.choice(["İlkokul", "Ortaokul", "Lise", "Üniversite"]),
+                "mother_job": random.choice(["Öğretmen", "Memur", "Doktor", "Ev Hanımı"]),
+                "mother_employer": random.choice(["Atakum Belediyesi", "MEB", "Hastane", None]),
+                "mother_salary": mother_salary,
+                "father_alive": True,
+                "father_name": f"Baba {random.choice(turkish_names)}",
+                "father_phone": f"555{random.randint(1000000, 9999999)}",
+                "father_education": random.choice(["İlkokul", "Ortaokul", "Lise", "Üniversite"]),
+                "father_job": random.choice(["Mühendis", "Memur", "İşçi", "Esnaf"]),
+                "father_employer": random.choice(["Atakum Belediyesi", "Üniversite", "Özel Şirket", None]),
+                "father_salary": father_salary,
+                "owns_house": random.choice([True, False]),
+                "marital_status": random.choice(["Evli", "Ayrı", "Boşanmış"]),
+                "preferred_kindergarten_1_id": random.choice(list(created_kindergartens.values())),
+                "preferred_kindergarten_2_id": random.choice([None] + list(created_kindergartens.values())),
+                "preferred_kindergarten_3_id": random.choice([None] + list(created_kindergartens.values()))
+            }
+            tc_base += 1
+            students_data.append(student_data)
     # Add students with specific age distributions
     age_distribution = {
         3: 10,  # 10 students of age 3
