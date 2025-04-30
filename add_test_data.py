@@ -236,8 +236,8 @@ def create_test_data():
             birth_month = random.randint(1, 12)
             birth_day = random.randint(1, 28)
             
-            mother_salary = random.randint(15000, 60000)
-            father_salary = random.randint(15000, 60000)
+            mother_salary = random.randint(22000, 100000)
+            father_salary = random.randint(22000, 100000)
             
             student_data = {
                 "name": f"{random.choice(turkish_names)} {random.choice(turkish_surnames)}",
@@ -253,16 +253,16 @@ def create_test_data():
                 "mother_phone": f"555{random.randint(1000000, 9999999)}",
                 "mother_education": random.choice(["İlkokul", "Ortaokul", "Lise", "Üniversite"]),
                 "mother_job": random.choice(["Öğretmen", "Memur", "Doktor", "Ev Hanımı"]),
-                "mother_employer": random.choice(["Atakum Belediyesi", "MEB", "Hastane", None]),
+                "mother_employer": random.choice(["Kamu", "Özel Sektör", "Atakum Belediyesi"]),
                 "mother_salary": mother_salary,
-                "father_alive": True,
-                "father_name": f"Baba {random.choice(turkish_names)}",
+                "father_alive": random.choice([True, False]),
+                "father_name": f"Baba {i}",
                 "father_phone": f"555{random.randint(1000000, 9999999)}",
-                "father_education": random.choice(["İlkokul", "Ortaokul", "Lise", "Üniversite"]),
-                "father_job": random.choice(["Mühendis", "Memur", "İşçi", "Esnaf"]),
-                "father_employer": random.choice(["Atakum Belediyesi", "Üniversite", "Özel Şirket", None]),
+                "father_education": random.choice(["İlkokul", "Ortaokul", "Lise", "Üniversite", "Yüksek Lisans", "Doktora"]),
+                "father_job": random.choice(["Mühendis", "Öğretmen", "Doktor", "Avukat", "Esnaf", "Memur"]),
+                "father_employer": random.choice(["Kamu", "Özel Sektör", "Atakum Belediyesi"]),
                 "father_salary": father_salary,
-                "owns_house": random.choice([True, False]),
+                "house_ownership": random.choice(["Ev Sahibi", "Kiracı"]),
                 "marital_status": random.choice(["Evli", "Ayrı", "Boşanmış"]),
                 "preferred_kindergarten_1_id": random.choice(list(created_kindergartens.values())),
                 "preferred_kindergarten_2_id": random.choice([None] + list(created_kindergartens.values())),

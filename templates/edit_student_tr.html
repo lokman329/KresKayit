@@ -194,10 +194,8 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <div class="form-check">
-                            {{ form.owns_house(class="form-check-input") }}
-                            {{ form.owns_house.label(class="form-check-label") }}
-                        </div>
+                        {{ form.house_ownership.label(class="form-label") }}
+                        {{ form.house_ownership(class="form-select") }}
                     </div>
                     <div class="col-md-6 mb-3">
                         {{ form.marital_status.label(class="form-label") }}

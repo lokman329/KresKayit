@@ -86,7 +86,7 @@ class Student(db.Model):
     father_salary = db.Column(db.Integer, default=0)
 
     # Shared Parent Info
-    owns_house = db.Column(db.Boolean, default=True)
+    house_ownership = db.Column(db.String(20), nullable=False)
     marital_status = db.Column(db.String(10))
 
     # Registration Info
@@ -116,7 +116,8 @@ class Student(db.Model):
         if self.school_experience and self.school_type == 'Devlet':
             points += 5
 
-        if 'Atakum Bel' in (self.mother_employer or '') or 'Atakum Bel' in (self.father_employer or ''):
+        # Check if either parent works at Atakum Belediyesi
+        if self.mother_employer == 'Atakum Belediyesi' or self.father_employer == 'Atakum Belediyesi':
             points += 5
 
         if not self.mother_alive:
@@ -125,7 +126,8 @@ class Student(db.Model):
         if not self.father_alive:
             points += 5
 
-        if not self.owns_house:
+        # Add points for renters
+        if self.house_ownership == 'Kiracı':
             points += 5
 
         if self.marital_status == 'Ayrı':
@@ -133,13 +135,13 @@ class Student(db.Model):
 
         total_salary = (self.mother_salary or 0) + (self.father_salary or 0)
 
-        if total_salary < 17000:
+        if total_salary < int(os.environ.get('MINIMUM_WAGE', 22000)):
             points += 20
-        elif total_salary < 35000:
+        elif total_salary < int(os.environ.get('SALARY_THRESHOLD_1', 44000)):
             points += 15
-        elif total_salary < 53000:
+        elif total_salary < int(os.environ.get('SALARY_THRESHOLD_2', 66000)):
             points += 10
-        elif total_salary < 67000:
+        elif total_salary < int(os.environ.get('SALARY_THRESHOLD_3', 88000)):
             points += 5
 
         self.points = points
@@ -203,7 +205,7 @@ def register():
             father_job=form.father_job.data,
             father_employer=form.father_employer.data,
             father_salary=form.father_salary.data,
-            owns_house=form.owns_house.data,
+            house_ownership=form.house_ownership.data,
             marital_status=form.marital_status.data,
             preferred_kindergarten_1_id=request.form.get('preferred_kindergarten_1'),
             preferred_kindergarten_2_id=request.form.get('preferred_kindergarten_2'),

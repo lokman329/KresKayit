@@ -32,7 +32,12 @@ class StudentForm(FlaskForm):
         ('Doktora', 'Doktora')
     ], validators=[Optional()])
     mother_job = StringField('Anne Meslek', validators=[Optional(), Length(max=100)])
-    mother_employer = StringField('Anne İşyeri', validators=[Optional(), Length(max=255)])
+    mother_employer = SelectField('Anne İşyeri', choices=[
+        ('', 'Seçiniz...'),
+        ('Kamu', 'Kamu'),
+        ('Özel Sektör', 'Özel Sektör'),
+        ('Atakum Belediyesi', 'Atakum Belediyesi')
+    ], validators=[Optional()])
     mother_salary = IntegerField('Anne Aylık Gelir', default=0)
 
     # Father Info
@@ -49,11 +54,19 @@ class StudentForm(FlaskForm):
         ('Doktora', 'Doktora')
     ], validators=[Optional()])
     father_job = StringField('Baba Meslek', validators=[Optional(), Length(max=100)])
-    father_employer = StringField('Baba İşyeri', validators=[Optional(), Length(max=255)])
+    father_employer = SelectField('Baba İşyeri', choices=[
+        ('', 'Seçiniz...'),
+        ('Kamu', 'Kamu'),
+        ('Özel Sektör', 'Özel Sektör'),
+        ('Atakum Belediyesi', 'Atakum Belediyesi')
+    ], validators=[Optional()])
     father_salary = IntegerField('Baba Aylık Gelir', default=0)
 
     # Additional Info
-    owns_house = BooleanField('Ev Sahibi', default=True)
+    house_ownership = SelectField('Konut Durumu', choices=[
+        ('Ev Sahibi', 'Ev Sahibi'),
+        ('Kiracı', 'Kiracı')
+    ], validators=[DataRequired()])
     marital_status = SelectField('Medeni Durum', choices=[
         ('Evli', 'Evli'),
         ('Ayrı', 'Ayrı'),
