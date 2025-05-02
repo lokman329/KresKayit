@@ -96,6 +96,8 @@ class Student(db.Model):
     class_id = db.Column(db.Integer, db.ForeignKey('class.id'))
 
     def calculate_points(self):
+        self.disqualified = False
+
         points = 0
         current_year = datetime.utcnow().year
         age = current_year - self.birth_date.year
@@ -440,6 +442,7 @@ def edit_student(student_id):
                     student.class_id = None
             
             # Recalculate points
+            db.session.flush()
             student.calculate_points()
             
             db.session.commit()
